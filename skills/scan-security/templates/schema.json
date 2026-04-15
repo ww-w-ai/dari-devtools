@@ -1,0 +1,135 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dari Security Scan Result",
+  "description": "Security vulnerability scan result schema -- findings with severity and status tracking",
+  "type": "object",
+  "required": ["version", "plugin", "skill", "project", "timestamp", "summary", "findings"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Schema version (semver, matches plugin.json)",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "plugin": {
+      "type": "string",
+      "description": "Plugin identifier",
+      "const": "devtools"
+    },
+    "skill": {
+      "type": "string",
+      "description": "Skill identifier",
+      "const": "scan-security"
+    },
+    "project": {
+      "type": "string",
+      "description": "Project root directory name"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 UTC timestamp (e.g., 2026-04-07T14:30:45Z)"
+    },
+    "summary": {
+      "type": "object",
+      "description": "Aggregated scan statistics",
+      "required": ["total", "passed", "warnings", "failures", "grade"],
+      "properties": {
+        "total": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Total number of findings"
+        },
+        "passed": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of findings with status: pass"
+        },
+        "warnings": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of findings with status: warn"
+        },
+        "failures": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of findings with status: fail"
+        },
+        "grade": {
+          "type": "string",
+          "enum": ["Excellent", "Good", "Needs Improvement", "Poor"],
+          "description": "Overall grade based on severity distribution"
+        }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "description": "Security vulnerability findings",
+      "items": {
+        "type": "object",
+        "required": ["file", "type", "severity", "status", "detail"],
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "File path relative to the project root"
+          },
+          "line": {
+            "type": ["integer", "null"],
+            "minimum": 1,
+            "description": "Line number (optional; may be null for file-level findings)"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "HARDCODED_SECRET",
+              "SQL_INJECTION",
+              "XSS",
+              "COMMAND_INJECTION",
+              "ERROR_EXPOSURE",
+              "GITIGNORE_MISSING"
+            ],
+            "description": "Vulnerability type"
+          },
+          "severity": {
+            "type": "string",
+            "enum": ["CRITICAL", "HIGH", "MEDIUM"],
+            "description": "Severity level"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["pass", "warn", "fail", "not_applicable", "shallow"],
+            "description": "Status: pass=safe, warn=conditional, fail=risky, not_applicable=no target, shallow=resolution failed"
+          },
+          "detail": {
+            "type": "string",
+            "description": "Human-readable description of the vulnerability and remediation"
+          },
+          "evidence": {
+            "type": "string",
+            "description": "One-line summary of the verification performed (tool, file count, pattern)"
+          }
+        }
+      }
+    },
+    "severitySummary": {
+      "type": "object",
+      "description": "Aggregation by severity level",
+      "properties": {
+        "critical": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of CRITICAL findings"
+        },
+        "high": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of HIGH findings"
+        },
+        "medium": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Number of MEDIUM findings"
+        }
+      }
+    }
+  }
+}

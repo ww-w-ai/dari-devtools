@@ -1,0 +1,22 @@
+{
+  "name": "dari-devtools",
+  "version": "0.1.0",
+  "displayName": "dari-devtools — Development Tools",
+  "description": "Plan-based autonomous PDCA execution orchestrator.",
+  "author": {
+    "name": "ww-w-ai",
+    "url": "https://github.com/ww-w-ai/dari-devtools"
+  },
+  "repository": "https://github.com/ww-w-ai/dari-devtools",
+  "license": "Apache-2.0",
+  "keywords": ["cc-config", "devtools", "bypass-pdca", "orchestrator"],
+  "peerPlugins": [
+    {
+      "name": "bkit",
+      "reason": "cto-lead, gap-detector, pdca-iterator, /simplify, /pdca archive"
+    }
+  ],
+  "engines": {
+    "claude-code": ">=2.3.0"
+  }
+}

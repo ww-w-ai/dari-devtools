@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dari Validate-Tests Result",
+  "description": "Schema for .ww-w-ai/devtools/validate-tests/latest.json -- test anti-pattern detection results",
+  "type": "object",
+  "required": ["version", "plugin", "skill", "project", "timestamp", "summary", "findings"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "plugin": { "type": "string", "const": "devtools" },
+    "skill": { "type": "string", "const": "validate-tests" },
+    "project": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "warnings", "failures", "grade"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "warnings": { "type": "integer", "minimum": 0 },
+        "failures": { "type": "integer", "minimum": 0 },
+        "grade": { "type": "string", "enum": ["Excellent", "Good", "Needs Improvement", "Poor"] }
+      }
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "type", "status"],
+        "properties": {
+          "file": { "type": "string" },
+          "line": { "type": "integer" },
+          "type": { "type": "string", "enum": ["VAGUE_NAME", "IMPLEMENTATION_DETAIL", "EXCESSIVE_MOCKS", "GLOBAL_STATE", "DB_DEPENDENCY"] },
+          "status": { "type": "string", "enum": ["warn", "not_applicable", "shallow"] },
+          "detail": { "type": "string" },
+          "evidence": { "type": "string", "description": "One-line summary of the verification performed" }
+        }
+      }
+    },
+    "categorySummary": {
+      "type": "object",
+      "properties": {
+        "vagueNames": { "type": "integer", "minimum": 0 },
+        "implementationDetails": { "type": "integer", "minimum": 0 },
+        "excessiveMocks": { "type": "integer", "minimum": 0 },
+        "globalState": { "type": "integer", "minimum": 0 },
+        "dbDependency": { "type": "integer", "minimum": 0 }
+      }
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "dari Validate-Architecture Result",
+  "description": "Schema for .ww-w-ai/devtools/validate-architecture/latest.json -- architecture layer violation detection results",
+  "type": "object",
+  "required": ["version", "plugin", "skill", "project", "timestamp", "summary", "findings"],
+  "properties": {
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+    "plugin": { "type": "string", "const": "devtools" },
+    "skill": { "type": "string", "const": "validate-architecture" },
+    "project": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "summary": {
+      "type": "object",
+      "required": ["total", "passed", "warnings", "failures", "grade"],
+      "properties": {
+        "total": { "type": "integer", "minimum": 0 },
+        "passed": { "type": "integer", "minimum": 0 },
+        "warnings": { "type": "integer", "minimum": 0 },
+        "failures": { "type": "integer", "minimum": 0 },
+        "grade": { "type": "string", "enum": ["Excellent", "Good", "Needs Improvement", "Poor"] }
+      }
+    },
+    "architectureBasis": {
+      "type": "string",
+      "description": "Source of the architecture definition",
+      "enum": ["CLAUDE.md definition", "General 3-layer"]
+    },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["file", "type", "severity"],
+        "properties": {
+          "file": { "type": "string" },
+          "line": { "type": "integer" },
+          "type": { "type": "string", "enum": ["LAYER_VIOLATION", "CIRCULAR_REFERENCE", "DIRECT_DB_IMPORT"] },
+          "severity": { "type": "string", "enum": ["ERROR", "WARN"] },
+          "status": { "type": "string", "enum": ["pass", "warn", "fail", "not_applicable", "shallow"] },
+          "detail": { "type": "string" },
+          "evidence": { "type": "string", "description": "One-line summary of the verification performed" }
+        }
+      }
+    }
+  }
+}
